@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import ImageUploadBox from "./component/ImageUploadBox";
 import axios from "axios";
@@ -12,23 +12,17 @@ function App() {
     setImageFormData(image);
   };
 
-  function handleSubmit() {
+  function handleSubmit(e) {
     const params = new FormData();
     if (!imageFormData) return;
-    console.log(imageFormData);
     params.append("image", imageFormData);
 
-    axios.post(`http://localhost:3001/send_image`, params).then((res) => {
+    axios.post(`/upload_image`, params, {headers: {'Content-Type': 'multipart/form-data' }}).then((res) => {
       console.log(res);
       console.log(res.data);
     });
+    return e.preventDefault();
   }
-
-  // useEffect(() => {
-  //   axios.get("http://localhost:3001/send_image").then((res) => {
-  //     console.log(res.data);
-  //   });
-  // });
 
   return (
     <div className="App">
