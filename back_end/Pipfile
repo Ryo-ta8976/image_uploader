@@ -7,6 +7,9 @@ verify_ssl = true
 
 [packages]
 flask = "*"
+google-cloud-storage = "*"
+firebase = "*"
+firebase-admin = "*"
 
 [requires]
 python_version = "3.8"
