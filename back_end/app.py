@@ -20,13 +20,11 @@ firebase_admin.initialize_app(cred, {'storageBucket': 'image-uploader-6cb38.apps
 
 @app.route('/upload_image', methods=['POST'])
 def upload_image():
-    print(request.files)
     if 'file' in request.files:
         return make_response(jsonify({'result':'file is empty.'}))
     file = request.files['image']
     saveFileName = datetime.now().strftime('%Y%m%d_%H%M%S_') + werkzeug.utils.secure_filename(file.filename)
     file.save(os.path.join(UPLOAD_DIR, saveFileName))
-    print(type(file))
 
     bucket = storage.bucket()
     blob = bucket.blob(saveFileName)
