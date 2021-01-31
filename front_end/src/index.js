@@ -4,12 +4,15 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { ThemeProvider, CSSReset } from '@chakra-ui/core'
+import { ChakraProvider } from "@chakra-ui/react"
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider>
       <CSSReset />
-      <App/>
+      <ChakraProvider>
+        <App/>
+      </ChakraProvider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
