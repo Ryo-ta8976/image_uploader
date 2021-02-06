@@ -12,6 +12,7 @@ function Upload () {
   const [status, setStatus] = useState(false);
   const [result, setResult] = useState(false);
   const [url, setUrl] = useState(null);
+  const [uploadedImage, setUploadedImage] = useState(null);
   const { addToast } = useToasts()
 
   const handleSetImage = (e) => {
@@ -28,7 +29,11 @@ function Upload () {
 
     axios.post(`/upload_image`, params, { headers: { 'Content-Type': 'multipart/form-data' } })
       .then((res) => {
-        console.log(res.data);
+        let reader = new FileReader();
+        reader.onloadend = () => {
+          setUploadedImage(reader.result);
+        }
+        reader.readAsDataURL(imageFormData);
         setUrl(res.data);
         setResult(true);
         setStatus(false);
@@ -39,6 +44,7 @@ function Upload () {
   if(result){
     return (
     <div>
+      <img src={uploadedImage} />
       <Textarea defaultValue={url}></Textarea>
       <CopyToClipboard text={url}
           onCopy={() => addToast('クリップボードにコピーしました', {

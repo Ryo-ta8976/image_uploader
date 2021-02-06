@@ -40,11 +40,20 @@ def upload_image():
         return make_response(jsonify({'result':'file is empty.'}))
     file = request.files['image']
     saveFileName = datetime.now().strftime('%Y%m%d_%H%M%S_') + werkzeug.utils.secure_filename(file.filename)
-    print(saveFileName)
     file.save(os.path.join(UPLOAD_DIR, saveFileName))
 
-    # CloudStorageに
-    # 保存
+    imageUrl = store_firebase(saveFileName)
+    store_mysql(saveFileName, imageUrl)
+
+    return imageUrl
+
+
+@app.errorhandler(werkzeug.exceptions.RequestEntityTooLarge)
+def handle_over_max_file_size(error):
+    return make_response(jsonify({'result':'file size is overed.'}))
+
+
+def store_firebase(saveFileName):
     bucket = storage.bucket()
     blob = bucket.blob(saveFileName)
     if saveFileName.split('.')[1] == 'png':
@@ -55,16 +64,10 @@ def upload_image():
     with open(UPLOAD_DIR + '/' + saveFileName, 'rb') as f:
         blob.upload_from_file(f, content_type=content_type)
     blob.make_public()
-    imageUrl = blob.public_url
+    return blob.public_url
 
-    # 画像urlをmysqlに保存
+
+def store_mysql(saveFileName, imageUrl):
     image = Image(saveFileName, imageUrl)
     db.session.add(image)
     db.session.commit()
-
-    return imageUrl
-
-
-@app.errorhandler(werkzeug.exceptions.RequestEntityTooLarge)
-def handle_over_max_file_size(error):
-    return make_response(jsonify({'result':'file size is overed.'}))
