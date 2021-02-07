@@ -1,9 +1,12 @@
-import React from 'react';
-import { Box, Button } from "@chakra-ui/core";
+import React, {useCallback} from 'react';
+import { Box } from "@chakra-ui/core";
 import { useDropzone } from "react-dropzone";
 import image from "../assets/image/image.svg";
+import axios from "axios";
+import { useToasts } from 'react-toast-notifications'
 
-export default function ImageUploadBox() {
+export default function ImageUploadBox(props) {
+  const { addToast } = useToasts();
   const property = {
     imageUrl: "https://bit.ly/2Z4KKcF",
     imageAlt: "Rear view of modern home with pool",
@@ -16,8 +19,32 @@ export default function ImageUploadBox() {
     rating: 4,
 
   };
+  const onDrop = useCallback((acceptedFiles) => {
+    acceptedFiles.forEach((file) => {
+        const params = new FormData();
+        if (!file) return;
+        params.append("image", file);
 
-  const {acceptedFiles, getRootProps, getInputProps} = useDropzone();
+        axios.post(`/upload_image`, params, { headers: { 'Content-Type': 'multipart/form-data' } })
+          .then((res) => {
+            let reader = new FileReader();
+            reader.onloadend = () => {
+              props.setUploadedImage(reader.result);
+            }
+            reader.readAsDataURL(file);
+            props.setUrl(res.data);
+            props.setResult(true);
+            props.setStatus(false);
+        })
+        .catch(() => addToast('画像のアップロードに失敗しました', {
+          appearance: 'error',
+          autoDismiss: true,
+        }));
+        return;
+    })
+  }, [addToast, props]);
+
+  const {acceptedFiles, getRootProps, getInputProps} = useDropzone({onDrop});
   const files = acceptedFiles.map(file => (
     <li>{file.path}</li>
   ));
@@ -47,9 +74,6 @@ export default function ImageUploadBox() {
           </div>
           {/* <input>Button</input> */}
         </div>
-        <ul>
-          {files}
-        </ul>
       </div>
     </Box>
   );

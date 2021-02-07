@@ -39,6 +39,7 @@ def upload_image():
     if 'file' in request.files:
         return make_response(jsonify({'result':'file is empty.'}))
     file = request.files['image']
+    print(file)
     saveFileName = datetime.now().strftime('%Y%m%d_%H%M%S_') + werkzeug.utils.secure_filename(file.filename)
     file.save(os.path.join(UPLOAD_DIR, saveFileName))
 

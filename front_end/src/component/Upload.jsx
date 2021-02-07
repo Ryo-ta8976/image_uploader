@@ -13,7 +13,7 @@ function Upload () {
   const [result, setResult] = useState(false);
   const [url, setUrl] = useState(null);
   const [uploadedImage, setUploadedImage] = useState(null);
-  const { addToast } = useToasts()
+  const { addToast } = useToasts();
 
   const handleSetImage = (e) => {
     if (!e.target.files) return;
@@ -44,7 +44,7 @@ function Upload () {
   if(result){
     return (
     <div>
-      <img src={uploadedImage} />
+      <img src={uploadedImage} alt='description' />
       <Textarea defaultValue={url}></Textarea>
       <CopyToClipboard text={url}
           onCopy={() => addToast('クリップボードにコピーしました', {
@@ -62,7 +62,12 @@ function Upload () {
         {status && <Progress size="md" isIndeterminate/> }
         {!status &&
           <div>
-            <ImageUploadBox />
+            <ImageUploadBox
+              setUrl={setUrl}
+              setResult={setResult}
+              setStatus={setStatus}
+              setUploadedImage={setUploadedImage}
+            />
             <form onSubmit={handleSubmit}>
               <label>
               Upload file:
