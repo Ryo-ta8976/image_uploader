@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import Upload from "./component/Upload"
 import { ToastProvider } from 'react-toast-notifications'
+import { ChakraProvider } from "@chakra-ui/react"
 
 
 function App () {
@@ -9,7 +10,9 @@ function App () {
     <div>
       <header>
         <ToastProvider>
-          <Upload />
+          <ChakraProvider>
+            <Upload />
+          </ChakraProvider>
         </ToastProvider>
       </header>
     </div>

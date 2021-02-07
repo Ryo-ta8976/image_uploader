@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react';
-import { Box } from "@chakra-ui/core";
+import { Box, Image, Text } from "@chakra-ui/core";
 import { useDropzone } from "react-dropzone";
 import image from "../assets/image/image.svg";
 import axios from "axios";
@@ -45,36 +45,40 @@ export default function ImageUploadBox(props) {
   }, [addToast, props]);
 
   const {acceptedFiles, getRootProps, getInputProps} = useDropzone({onDrop});
-  const files = acceptedFiles.map(file => (
-    <li>{file.path}</li>
-  ));
 
   return (
     <Box
       bg="white"
-      borderWidth="1px"
       overflow="hidden"
-      color="black"
-      rounded="5px"
-      height="600px"
-      width="500px">
-      <Box p="4">
-        <Box>
+      borderWidth="1px"
+      borderRadius="lg"
+      w="40%"
+      mx="auto"
+      mt="50px"
+      h="500px"
+      boxShadow="lg"
+    >
+      <Box mt="20px">
+        <Text fontSize="2xl" textAlign="center">
           {property.title}
-        </Box>
-        {property.sentence}
+        </Text>
+        <Text  color="gray.500" textAlign="center" fontSize="md">
+          {property.sentence}
+        </Text>
       </Box>
 
-      <div className="container">
+      <Box h="80%" w="100%" className="container">
         <div {...getRootProps({className: 'dropzone'})}>
           <input {...getInputProps()} />
-          <div>
-            <img src={image} alt="description"/>
-            <p>Drag & Drop your image here</p>
-          </div>
-          {/* <input>Button</input> */}
+          <Box w="80%"　bg="blue.50" border="2px" borderColor="blue.200" borderRadius="lg"　borderStyle="dotted" mt="40px" mx="auto" paddingTop="20px" paddingBottom="20px">
+            <Image bg="blue" mx="auto" src={image} alt="description"/>
+            <Box mt="10px">
+              <Text textAlign="center">Drag & Drop your image</Text>
+              <Text textAlign="center">or Click here</Text>
+            </Box>
+          </Box>
         </div>
-      </div>
+      </Box>
     </Box>
   );
 }
