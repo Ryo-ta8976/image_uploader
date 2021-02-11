@@ -18,7 +18,7 @@ firebase_admin.initialize_app(cred, {'storageBucket': 'image-uploader-6cb38.apps
 
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_url_path='', static_folder='../build')
 
     # データサイズの上限:1MB
     app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024
@@ -34,12 +34,16 @@ app = create_app()
 db = SQLAlchemy(app)
 
 
+@app.route('/', defaults={'path':''})
+def index(path):
+    return send_from_directory(app.static_folder,'index.html')
+
+
 @app.route('/upload_image', methods=['POST'])
 def upload_image():
     if 'file' in request.files:
         return make_response(jsonify({'result':'file is empty.'}))
     file = request.files['image']
-    print(file)
     saveFileName = datetime.now().strftime('%Y%m%d_%H%M%S_') + werkzeug.utils.secure_filename(file.filename)
     file.save(os.path.join(UPLOAD_DIR, saveFileName))
 
