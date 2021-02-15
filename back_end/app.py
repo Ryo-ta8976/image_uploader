@@ -5,10 +5,10 @@ import werkzeug
 import io
 import firebase_admin
 from firebase_admin import credentials, storage
-from server.database import init_db
-import server.models
+from back_end.server.database import init_db
+import back_end.server.models
 from flask_sqlalchemy import SQLAlchemy
-from server.models.model import Image
+from back_end.server.models.model import Image
 import json
 
 
@@ -26,7 +26,7 @@ def create_app():
     app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024
 
     # DB接続設定
-    app.config.from_object('server.config.Config')
+    app.config.from_object('back_end.server.config.Config')
     init_db(app)
 
     return app
