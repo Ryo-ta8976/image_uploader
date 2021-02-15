@@ -1,3 +1,4 @@
 /uploads/
 serviceAccountKey.json
 setup.sh
+/.env

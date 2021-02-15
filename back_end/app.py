@@ -9,16 +9,18 @@ from server.database import init_db
 import server.models
 from flask_sqlalchemy import SQLAlchemy
 from server.models.model import Image
+import json
 
 
 UPLOAD_DIR = os.getenv('UPLOAD_DIR_PATH') # uploads/
 # firebase認証
-cred = credentials.Certificate('./serviceAccountKey.json')
+cred = credentials.Certificate(json.loads(os.environ['SERVICE_ACCOUNT_KEY']))
+# cred = credentials.Certificate('./serviceAccountKey.json')
 firebase_admin.initialize_app(cred, {'storageBucket': 'image-uploader-6cb38.appspot.com'})
 
 
 def create_app():
-    app = Flask(__name__, static_url_path='', static_folder='../build')
+    app = Flask(__name__, static_url_path='', static_folder='./build')
 
     # データサイズの上限:1MB
     app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024
