@@ -76,3 +76,7 @@ def store_mysql(saveFileName, imageUrl):
     image = Image(saveFileName, imageUrl)
     db.session.add(image)
     db.session.commit()
+
+
+if __name__ == '__main__':
+    app.run()
