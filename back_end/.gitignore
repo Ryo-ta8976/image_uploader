@@ -1,4 +1,5 @@
-/uploads/
+/uploads/*
+!.gitkeep
 serviceAccountKey.json
 setup.sh
 /.env
