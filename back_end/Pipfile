@@ -15,6 +15,7 @@ flask-sqlalchemy = "*"
 flask-migrate = "*"
 pymysql = "*"
 gunicorn = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.8"

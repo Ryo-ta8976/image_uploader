@@ -8,11 +8,12 @@ from firebase_admin import credentials, storage
 from back_end.server.database import init_db
 import back_end.server.models
 from flask_sqlalchemy import SQLAlchemy
-from back_end.server.models.model import Image
+from back_end.server.models.model import ImageStore
 import json
+from PIL import Image
 
 
-UPLOAD_DIR = os.getenv('UPLOAD_DIR_PATH') # uploads/
+UPLOAD_DIR = os.getenv('UPLOAD_DIR_PATH') # back_end/uploads/
 # firebase認証
 cred = credentials.Certificate(json.loads(os.environ['SERVICE_ACCOUNT_KEY']))
 # cred = credentials.Certificate('./serviceAccountKey.json')
@@ -47,9 +48,9 @@ def upload_image():
         return make_response(jsonify({'result':'file is empty.'}))
     file = request.files['image']
     saveFileName = datetime.now().strftime('%Y%m%d_%H%M%S_') + werkzeug.utils.secure_filename(file.filename)
-    file.save(os.path.join(UPLOAD_DIR, saveFileName))
+    # file.save(os.path.join(UPLOAD_DIR, saveFileName))
 
-    imageUrl = store_firebase(saveFileName)
+    imageUrl = store_firebase(file, saveFileName)
     store_mysql(saveFileName, imageUrl)
 
     return imageUrl
@@ -60,22 +61,35 @@ def handle_over_max_file_size(error):
     return make_response(jsonify({'result':'file size is overed.'}))
 
 
-def store_firebase(saveFileName):
+def store_firebase(file, saveFileName):
     bucket = storage.bucket()
     blob = bucket.blob(saveFileName)
-    if saveFileName.split('.')[1] == 'png':
+    image_format = saveFileName.split('.')[1]
+    if image_format == 'png':
         content_type = 'image/png'
     else:
         content_type = 'image/jpg'
     blob = bucket.blob(saveFileName)
-    with open(UPLOAD_DIR + '/' + saveFileName, 'rb') as f:
-        blob.upload_from_file(f, content_type=content_type)
+    # image = io.BufferedReader(file)
+    # print(type(image))
+    # blob.upload_from_file(image, content_type=content_type)
+    # # with open(UPLOAD_DIR + '/' + saveFileName, 'rb') as f:
+    # #     print(type(f))
+    # #     blob.upload_from_file(f, content_type=content_type)
+    # bytes形式で読み込み
+    img = Image.open(file)
+    # メモリでデータを保持する
+    bio = io.BytesIO()
+    img.save(bio, format=image_format)
+
+    blob.upload_from_string(data=bio.getvalue(), content_type=content_type)
+
     blob.make_public()
     return blob.public_url
 
 
 def store_mysql(saveFileName, imageUrl):
-    image = Image(saveFileName, imageUrl)
+    image = ImageStore(saveFileName, imageUrl)
     db.session.add(image)
     db.session.commit()
 

@@ -4,7 +4,7 @@ from back_end.server.database import db
 
 # Base = declarative_base()
 
-class Image(db.Model):
+class ImageStore(db.Model):
   __tablename__ = 'images'
 
   id = Column(Integer, primary_key=True)
