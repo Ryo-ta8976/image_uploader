@@ -8,4 +8,3 @@ MIGRATION_DIR = os.path.join('back_end/server/models', 'migrations')
 def init_db(app):
   db.init_app(app)
   Migrate(app, db, directory=MIGRATION_DIR)
-  # Migrate(app, db)

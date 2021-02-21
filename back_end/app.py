@@ -48,7 +48,6 @@ def upload_image():
         return make_response(jsonify({'result':'file is empty.'}))
     file = request.files['image']
     saveFileName = datetime.now().strftime('%Y%m%d_%H%M%S_') + werkzeug.utils.secure_filename(file.filename)
-    # file.save(os.path.join(UPLOAD_DIR, saveFileName))
 
     imageUrl = store_firebase(file, saveFileName)
     store_mysql(saveFileName, imageUrl)
@@ -70,12 +69,7 @@ def store_firebase(file, saveFileName):
     else:
         content_type = 'image/jpg'
     blob = bucket.blob(saveFileName)
-    # image = io.BufferedReader(file)
-    # print(type(image))
-    # blob.upload_from_file(image, content_type=content_type)
-    # # with open(UPLOAD_DIR + '/' + saveFileName, 'rb') as f:
-    # #     print(type(f))
-    # #     blob.upload_from_file(f, content_type=content_type)
+
     # bytes形式で読み込み
     img = Image.open(file)
     # メモリでデータを保持する
@@ -83,7 +77,6 @@ def store_firebase(file, saveFileName):
     img.save(bio, format=image_format)
 
     blob.upload_from_string(data=bio.getvalue(), content_type=content_type)
-
     blob.make_public()
     return blob.public_url
 
