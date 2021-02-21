@@ -39,8 +39,6 @@ pipenv install
  
 # Usage
  
-DEMOの実行方法など、"hoge"の基本的な使い方を説明する
- 
 ```bash
 git clone git@github.com:Ryo-ta8976/image_uploader.git
 cd image_uploader
