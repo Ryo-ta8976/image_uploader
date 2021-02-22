@@ -1,6 +1,6 @@
 # Image Uploader
  
-PNG画像をドラッグ&ドロップすると画像URLを生成してくれる。
+PNG画像(ひらがな対応不可)をドラッグ&ドロップすると画像URLを生成してくれる。
  
 # DEMO
 <a href="https://image-uploader-arar.herokuapp.com/">DEMO 
